@@ -23,13 +23,19 @@ Verificação em Chromium com Playwright, incluindo as dez seções, as etapas e
 
 As capturas finais estão em `preview-desktop.jpg`, `preview-mobile.jpg`, `preview-dark.jpg` e `preview-credits.jpg`.
 
+## Refinamento de interação (27/09/2026)
+
+O seletor nativo do simulador foi substituído por um menu visual com indicação da opção selecionada. Foi verificado por mouse e teclado (setas, Enter, Escape), inclusive o foco ao fechar. O cabeçalho compacto acompanha a seção visível, destaca o item de navegação e mostra o progresso de leitura; blocos entram uma vez ao aparecer no viewport. O ajuste de movimento reduzido continua salvo após recarregar e mantém todo o conteúdo visível.
+
+No build de produção local, a nova interação foi conferida em Chromium a 1440, 390 e 360 px, sem overflow horizontal nem erros de console. As prévias estão em `preview-interaction-desktop.jpg` e `preview-interaction-mobile.jpg`. Uma nova auditoria Lighthouse foi executada após estes ajustes.
+
 ## Lighthouse
 
 Auditoria do build de produção local. Pontuação na ordem Performance / Acessibilidade / Boas práticas / SEO:
 
 | Perfil  | Pontuação                          | CLS | LCP |
 | ------- | ---------------------------------- | --: | --: |
-| Mobile  | 93 / 100 / 100 / 100 |   0 | 3,11 s |
-| Desktop | 100 / 100 / 100 / 100 |   0 | 0,69 s |
+| Mobile  | 91 / 100 / 100 / 100 |   0 | 3,23 s |
+| Desktop | 100 / 100 / 100 / 100 |   0 | 0,66 s |
 
 Os números de produção hospedada podem variar conforme ambiente e rede. A URL pública da Vercel ainda não foi definida; por isso, o preview e a proteção de acesso do deployment não foram verificados nesta execução.

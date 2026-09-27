@@ -41,7 +41,7 @@ export function IntegrationFlow() {
       aria-labelledby="integration-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">O caso integrado</span>
             <h2 id="integration-title">
@@ -57,7 +57,7 @@ export function IntegrationFlow() {
             resposta.
           </p>
         </div>
-        <div className="integration-lab">
+        <div className="integration-lab" data-reveal>
           <div className="integration-lab__top">
             <div>
               <span className="integration-lab__name">Percurso guiado</span>

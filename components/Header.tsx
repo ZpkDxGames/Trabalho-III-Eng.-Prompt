@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Menu,
   Settings2,
@@ -12,6 +14,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { navigation } from "@/data/content";
+import { useMotionPreference } from "@/lib/useMotionPreference";
 
 type Theme = "system" | "light" | "dark";
 
@@ -35,8 +38,15 @@ function writeSetting(key: string, value: string) {
 }
 
 export function Header() {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const settingsButtonRef = useRef<HTMLButtonElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const manualReducedMotion = useMotionPreference();
   const theme = useSyncExternalStore(
     subscribeSettings,
     readTheme,
@@ -47,8 +57,16 @@ export function Header() {
     () => localStorage.getItem("lab-reduced-motion") === "true",
     () => false,
   );
-  const [progress, setProgress] = useState(0);
   const [active, setActive] = useState<string>("inicio");
+  const [scrolled, setScrolled] = useState(false);
+  const activeIndex = navigation.findIndex((item) => item.id === active);
+  const currentLabel =
+    pathname === "/creditos"
+      ? "Créditos"
+      : (navigation[activeIndex]?.label ?? "Início");
+  const currentNumber =
+    pathname === "/creditos" ? "—" : String(activeIndex + 1).padStart(2, "0");
+  const reduceMotion = prefersReducedMotion || manualReducedMotion;
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -57,43 +75,82 @@ export function Header() {
   }, [theme, reduced]);
 
   useEffect(() => {
+    let frame = 0;
+    const sections =
+      pathname === "/"
+        ? navigation.map(({ id }) => document.getElementById(id))
+        : [];
     const update = () => {
       const size = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(
-        size > 0
-          ? Math.min(100, Math.max(0, (window.scrollY / size) * 100))
-          : 0,
-      );
+      const progress =
+        size > 0 ? Math.min(1, Math.max(0, window.scrollY / size)) : 0;
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${progress})`;
+      }
+      setScrolled(window.scrollY > 48);
+
+      if (pathname !== "/") return;
+      const marker = Math.min(180, window.innerHeight * 0.3);
+      let current = 0;
+      sections.forEach((section, index) => {
+        if (section && section.getBoundingClientRect().top <= marker) {
+          current = index;
+        }
+      });
+      if (progress >= 0.995) current = navigation.length - 1;
+      setActive(navigation[current].id);
     };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-15% 0px -60% 0px", threshold: [0, 0.2, 0.5] },
-    );
-    navigation.forEach(({ id }) => {
-      const element = document.getElementById(id);
-      if (element) observer.observe(element);
-    });
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        update();
+      });
+    };
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
     };
-  }, []);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen && !settingsOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+        setSettingsOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (settingsOpen) settingsButtonRef.current?.focus();
+      if (menuOpen) menuButtonRef.current?.focus();
+      setMenuOpen(false);
+      setSettingsOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen, settingsOpen]);
 
   return (
     <>
       <a className="skip-link" href="#conteudo">
         Pular para o conteúdo
       </a>
-      <header className="site-header">
+      <header
+        ref={headerRef}
+        className={`site-header${scrolled ? " site-header--scrolled" : ""}${menuOpen || settingsOpen ? " site-header--panel-open" : ""}`}
+      >
         <div className="header-shell">
           <Link
             href="/#inicio"
@@ -123,20 +180,46 @@ export function Header() {
               .map((item) => (
                 <a
                   key={item.id}
-                  className={active === item.id ? "is-active" : ""}
+                  className={
+                    pathname === "/" && active === item.id ? "is-active" : ""
+                  }
+                  aria-current={
+                    pathname === "/" && active === item.id
+                      ? "location"
+                      : undefined
+                  }
                   href={`/#${item.id}`}
                 >
                   {item.label}
                 </a>
               ))}
-            <Link href="/creditos">Créditos</Link>
+            <Link
+              href="/creditos"
+              className={pathname === "/creditos" ? "is-active" : ""}
+              aria-current={pathname === "/creditos" ? "page" : undefined}
+            >
+              Créditos
+            </Link>
           </nav>
+          <div
+            className="header-context"
+            aria-label={`Seção atual: ${currentLabel}`}
+          >
+            <span className="header-context__dot" aria-hidden="true" />
+            <span className="header-context__label">{currentLabel}</span>
+            <span className="header-context__number" aria-hidden="true">
+              {currentNumber} /{" "}
+              {pathname === "/creditos" ? "—" : navigation.length}
+            </span>
+          </div>
           <div className="header-actions">
             <button
+              ref={settingsButtonRef}
               className="icon-button"
               type="button"
               aria-label="Abrir configurações"
               aria-expanded={settingsOpen}
+              aria-controls="settings-panel"
               onClick={() => {
                 setSettingsOpen(!settingsOpen);
                 setMenuOpen(false);
@@ -145,6 +228,7 @@ export function Header() {
               <Settings2 size={19} />
             </button>
             <button
+              ref={menuButtonRef}
               className="icon-button mobile-toggle"
               type="button"
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
@@ -159,88 +243,130 @@ export function Header() {
             </button>
           </div>
         </div>
-        {menuOpen && (
-          <nav
-            id="menu-mobile"
-            className="mobile-nav"
-            aria-label="Navegação móvel"
-          >
-            {navigation.map((item) => (
-              <a
-                key={item.id}
-                href={`/#${item.id}`}
+        <AnimatePresence initial={false}>
+          {menuOpen && (
+            <motion.nav
+              id="menu-mobile"
+              className="mobile-nav"
+              aria-label="Navegação móvel"
+              aria-hidden={!menuOpen}
+              inert={!menuOpen}
+              initial={
+                reduceMotion ? false : { opacity: 0, y: -9, scale: 0.98 }
+              }
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={
+                reduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: -7, scale: 0.98 }
+              }
+              transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
+            >
+              {navigation.map((item) => (
+                <a
+                  key={item.id}
+                  href={`/#${item.id}`}
+                  className={
+                    pathname === "/" && active === item.id ? "is-active" : ""
+                  }
+                  aria-current={
+                    pathname === "/" && active === item.id
+                      ? "location"
+                      : undefined
+                  }
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <Link
+                href="/creditos"
+                className={pathname === "/creditos" ? "is-active" : ""}
+                aria-current={pathname === "/creditos" ? "page" : undefined}
                 onClick={() => setMenuOpen(false)}
               >
-                {item.label}
-              </a>
-            ))}
-            <Link href="/creditos" onClick={() => setMenuOpen(false)}>
-              Créditos <ArrowUpRight size={16} />
-            </Link>
-          </nav>
-        )}
-        {settingsOpen && (
-          <div
-            className="settings-panel"
-            role="group"
-            aria-label="Configurações da página"
-          >
-            <div className="settings-panel__top">
-              <strong>Preferências de leitura</strong>
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Fechar configurações"
-                onClick={() => setSettingsOpen(false)}
-              >
-                <X size={17} />
-              </button>
-            </div>
-            <p>Estas escolhas ficam salvas neste navegador.</p>
-            <fieldset>
-              <legend>Aparência</legend>
-              <div className="settings-options">
-                {(
-                  [
-                    ["system", "Sistema", Monitor],
-                    ["light", "Claro", Sun],
-                    ["dark", "Escuro", Moon],
-                  ] as const
-                ).map(([value, label, Icon]) => (
-                  <button
-                    className={theme === value ? "selected" : ""}
-                    type="button"
-                    key={value}
-                    aria-pressed={theme === value}
-                    onClick={() => writeSetting("lab-theme", value)}
-                  >
-                    <Icon size={16} />
-                    {label}
-                  </button>
-                ))}
+                Créditos <ArrowUpRight size={16} />
+              </Link>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+        <AnimatePresence initial={false}>
+          {settingsOpen && (
+            <motion.div
+              id="settings-panel"
+              className="settings-panel"
+              role="group"
+              aria-label="Configurações da página"
+              aria-hidden={!settingsOpen}
+              inert={!settingsOpen}
+              initial={
+                reduceMotion ? false : { opacity: 0, y: -9, scale: 0.98 }
+              }
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={
+                reduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: -7, scale: 0.98 }
+              }
+              transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
+            >
+              <div className="settings-panel__top">
+                <strong>Preferências de leitura</strong>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="Fechar configurações"
+                  onClick={() => setSettingsOpen(false)}
+                >
+                  <X size={17} />
+                </button>
               </div>
-            </fieldset>
-            <label className="motion-toggle">
-              <span>
-                <strong>Reduzir animações</strong>
-                <small>Desativa movimento não essencial.</small>
-              </span>
-              <input
-                type="checkbox"
-                checked={reduced}
-                onChange={(event) =>
-                  writeSetting(
-                    "lab-reduced-motion",
-                    String(event.target.checked),
-                  )
-                }
-              />
-            </label>
-          </div>
-        )}
+              <p>Estas escolhas ficam salvas neste navegador.</p>
+              <fieldset>
+                <legend>Aparência</legend>
+                <div className="settings-options">
+                  {(
+                    [
+                      ["system", "Sistema", Monitor],
+                      ["light", "Claro", Sun],
+                      ["dark", "Escuro", Moon],
+                    ] as const
+                  ).map(([value, label, Icon]) => (
+                    <button
+                      className={theme === value ? "selected" : ""}
+                      type="button"
+                      key={value}
+                      aria-pressed={theme === value}
+                      onClick={() => writeSetting("lab-theme", value)}
+                    >
+                      <Icon size={16} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              <label className="motion-toggle">
+                <span>
+                  <strong>Reduzir animações</strong>
+                  <small>Desativa movimento não essencial.</small>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={reduced}
+                  onChange={(event) =>
+                    writeSetting(
+                      "lab-reduced-motion",
+                      String(event.target.checked),
+                    )
+                  }
+                />
+              </label>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <span
+          ref={progressRef}
           className="reading-progress"
-          style={{ width: `${progress}%` }}
           aria-hidden="true"
         />
       </header>

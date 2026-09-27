@@ -14,7 +14,7 @@ export function ArchitectureExplorer() {
       aria-labelledby="architecture-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">Inspecione as peças</span>
             <h2 id="architecture-title">Quem recebe o quê?</h2>
@@ -25,7 +25,7 @@ export function ArchitectureExplorer() {
             e o retriever pertencem à recuperação.
           </p>
         </div>
-        <div className="explorer">
+        <div className="explorer" data-reveal>
           <div
             className="explorer-grid"
             role="group"

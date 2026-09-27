@@ -8,7 +8,7 @@ export function TransparencyTable() {
       aria-labelledby="production-title"
     >
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <span className="section-kicker">Método de produção</span>
           <h2 id="production-title">
             Como este trabalho
@@ -21,7 +21,7 @@ export function TransparencyTable() {
             sido confirmadas.
           </p>
         </div>
-        <div className="production-table">
+        <div className="production-table" data-reveal>
           <div className="production-table__head">
             <span>Ferramenta</span>
             <span>Produzido com apoio de IA / ferramenta</span>

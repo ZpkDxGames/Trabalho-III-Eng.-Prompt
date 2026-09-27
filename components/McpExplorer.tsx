@@ -104,7 +104,7 @@ export function McpExplorer() {
       aria-labelledby="mcp-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">Conectar para agir</span>
             <h2 id="mcp-title">
@@ -119,7 +119,7 @@ export function McpExplorer() {
             cliente MCP se comunica com o servidor.
           </p>
         </div>
-        <div className="mcp-principle">
+        <div className="mcp-principle" data-reveal>
           <div>
             <Badge tone="mcp">Revisão 2026-07-28</Badge>
             <h3>Uma requisição se explica sozinha.</h3>
@@ -132,7 +132,7 @@ export function McpExplorer() {
             2025 e anteriores.
           </p>
         </div>
-        <div className="mcp-lab">
+        <div className="mcp-lab" data-reveal>
           <div className="mcp-lab__intro">
             <span>Exemplo isolado · IDE fictícia</span>
             <p>

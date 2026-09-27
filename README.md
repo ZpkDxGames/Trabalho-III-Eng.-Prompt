@@ -6,13 +6,14 @@ Microsite educacional em português sobre Retrieval-Augmented Generation (RAG), 
 
 ![Prévia do atlas em desktop](docs/preview-desktop.jpg)
 
-[Prévia mobile](docs/preview-mobile.jpg) · [Tema escuro](docs/preview-dark.jpg) · [Créditos](docs/preview-credits.jpg)
+[Prévia mobile](docs/preview-mobile.jpg) · [Interação desktop](docs/preview-interaction-desktop.jpg) · [Interação mobile](docs/preview-interaction-mobile.jpg) · [Tema escuro](docs/preview-dark.jpg) · [Créditos](docs/preview-credits.jpg)
 
 ## O percurso
 
 - O problema de um LLM isolado: dados privados, informações atuais e ferramentas.
 - RAG: preparação do índice, recuperação, construção do contexto e resposta com fontes.
 - Simulação RAG local sobre uma biblioteca fictícia, com documentos inspecionáveis.
+- Seletor de perguntas acessível, cabeçalho que indica a seção em leitura e entradas suaves dos blocos durante o scroll.
 - MCP 2026-07-28: host, cliente, servidor, tools, resources, prompts e chamadas stateless.
 - Exemplo MCP isolado numa IDE fictícia e um caso integrado em nove passos.
 - Comparação, mapa de componentes, segurança, fontes e transparência de produção.

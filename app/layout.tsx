@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ScrollExperience } from "@/components/ScrollExperience";
 import "./globals.css";
 
 const display = localFont({
@@ -46,7 +47,10 @@ export default function RootLayout({
       data-motion="system"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <ScrollExperience />
+        {children}
+      </body>
     </html>
   );
 }

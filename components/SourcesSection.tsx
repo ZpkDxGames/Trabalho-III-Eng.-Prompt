@@ -10,7 +10,7 @@ export function SourcesSection() {
       aria-labelledby="sources-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">Para conferir</span>
             <h2 id="sources-title">
@@ -23,7 +23,7 @@ export function SourcesSection() {
             protocolo e os cuidados de segurança apresentados no laboratório.
           </p>
         </div>
-        <div className="sources-list">
+        <div className="sources-list" data-reveal>
           {sources.map((source) => (
             <a
               key={source.href}
@@ -41,7 +41,7 @@ export function SourcesSection() {
             </a>
           ))}
         </div>
-        <div className="sources-next">
+        <div className="sources-next" data-reveal>
           <div>
             <span>O próximo passo é humano.</span>
             <p>

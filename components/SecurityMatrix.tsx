@@ -9,7 +9,7 @@ export function SecurityMatrix() {
       aria-labelledby="security-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">Confiabilidade</span>
             <h2 id="security-title">
@@ -24,7 +24,7 @@ export function SecurityMatrix() {
             próprios.
           </p>
         </div>
-        <div className="risk-grid">
+        <div className="risk-grid" data-reveal>
           {risks.map((risk) => (
             <article className="risk" key={risk.title}>
               <span

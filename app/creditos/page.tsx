@@ -123,7 +123,7 @@ export default function CreditsPage() {
           <Link className="credits-back" href="/#inicio">
             <ArrowLeft size={17} /> Voltar ao atlas
           </Link>
-          <div className="credits-heading">
+          <div className="credits-heading" data-reveal>
             <span className="section-kicker">Quem compõe o trabalho</span>
             <h1>
               Três perspectivas.
@@ -135,7 +135,7 @@ export default function CreditsPage() {
               uma experiência que possa ser explorada sem apresentação oral.
             </p>
           </div>
-          <div className="team-grid">
+          <div className="team-grid" data-reveal>
             {team.map((person) => (
               <article
                 className={`team-card team-card--${person.id}`}
