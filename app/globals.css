@@ -2018,9 +2018,8 @@ p {
 .production-table__row p {
   margin: 0;
 }
-.production-placeholder {
-  color: var(--muted);
-  font-style: italic;
+.production-review {
+  color: var(--ink);
 }
 
 .section--sources {
@@ -2643,6 +2642,16 @@ p {
   }
   .production-table__row p {
     padding-top: 8px;
+  }
+  .production-table__row p::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--rag);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
   .sources-next {
     display: block;
