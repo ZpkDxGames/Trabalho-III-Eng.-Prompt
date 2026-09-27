@@ -43,7 +43,7 @@ export function ProblemSection() {
       aria-labelledby="problem-title"
     >
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <span className="section-kicker">Ponto de partida</span>
           <h2 id="problem-title">
             Um LLM não enxerga tudo
@@ -56,7 +56,7 @@ export function ProblemSection() {
             falta.
           </p>
         </div>
-        <div className="problem-layout">
+        <div className="problem-layout" data-reveal>
           <div className="problem-system">
             <div className="problem-system__core">
               <span className="core-pulse" />

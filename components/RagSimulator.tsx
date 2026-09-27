@@ -14,6 +14,7 @@ import {
 import { ragExamples } from "@/data/demo";
 import { Badge } from "./ui/Badge";
 import { StepIndicator } from "./ui/StepIndicator";
+import { QuestionPicker } from "./ui/QuestionPicker";
 import { useMotionPreference } from "@/lib/useMotionPreference";
 
 const phases = ["Fontes", "Recuperação", "Contexto", "Resposta"];
@@ -39,7 +40,7 @@ export function RagSimulator() {
       aria-labelledby="rag-title"
     >
       <div className="container">
-        <div className="section-heading section-heading--split">
+        <div className="section-heading section-heading--split" data-reveal>
           <div>
             <span className="section-kicker">Recuperar para responder</span>
             <h2 id="rag-title">
@@ -54,7 +55,7 @@ export function RagSimulator() {
             útil.
           </p>
         </div>
-        <div className="rag-pipeline">
+        <div className="rag-pipeline" data-reveal>
           <div>
             <div className="pipeline-label">
               <span>01</span>
@@ -90,7 +91,7 @@ export function RagSimulator() {
             </p>
           </div>
         </div>
-        <div className="lab">
+        <div className="lab" data-reveal>
           <div className="lab__top">
             <div>
               <Badge tone="rag">Laboratório RAG</Badge>
@@ -103,23 +104,19 @@ export function RagSimulator() {
             <StepIndicator current={phase + 1} total={4} label="Etapa" />
           </div>
           <div className="rag-controls">
-            <label htmlFor="rag-question">Pergunta de exemplo</label>
+            <span id="rag-question-label" className="rag-controls__label">
+              Pergunta de exemplo
+            </span>
             <div className="rag-controls__row">
-              <select
-                id="rag-question"
-                value={exampleIndex}
-                onChange={(event) => {
-                  setExampleIndex(Number(event.target.value));
+              <QuestionPicker
+                questions={ragExamples.map((item) => item.query)}
+                selected={exampleIndex}
+                onSelect={(index) => {
+                  setExampleIndex(index);
                   setPhase(0);
                   setInspected(null);
                 }}
-              >
-                {ragExamples.map((item, index) => (
-                  <option value={index} key={item.query}>
-                    {item.query}
-                  </option>
-                ))}
-              </select>
+              />
               <button
                 type="button"
                 className="button button--dark"

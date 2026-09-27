@@ -9,7 +9,7 @@ export function ComparisonMatrix() {
       aria-labelledby="comparison-title"
     >
       <div className="container">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <span className="section-kicker">Duas perguntas diferentes</span>
           <h2 id="comparison-title">Onde cada ideia atua?</h2>
           <p>
@@ -20,6 +20,7 @@ export function ComparisonMatrix() {
         </div>
         <div
           className="comparison"
+          data-reveal
           role="table"
           aria-label="Comparação entre RAG e MCP"
         >
