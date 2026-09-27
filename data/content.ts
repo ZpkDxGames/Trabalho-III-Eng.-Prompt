@@ -126,29 +126,33 @@ export const sources = [
 
 export const productionRows = [
   {
-    tool: "ChatGPT — GPT-5.6 Sol",
+    tool: "ChatGPT — GPT-6 Astra Max",
     ai: "Apoio à análise do enunciado, síntese e especificação.",
-    human: "[Descrever como o grupo conferiu e ajustou a especificação.]",
+    human:
+      "Conferir se objetivos, conceitos de RAG e MCP e roteiro do caso atendem ao enunciado; ajustar trechos ambíguos e manter afirmações sustentadas pelas fontes.",
   },
   {
     tool: "Deep Research",
     ai: "Apoio ao levantamento de fontes técnicas.",
-    human: "[Indicar as fontes conferidas diretamente pelo grupo.]",
+    human:
+      "Abrir os trabalhos e documentos originais, verificar autoria, data e versão do protocolo e confirmar que cada referência apoia a explicação apresentada.",
   },
   {
     tool: "ChatGPT Work",
     ai: "Apoio à implementação e verificação deste microsite.",
     human:
-      "[Descrever a revisão de texto, interações e visual feita pelo grupo.]",
+      "Ler o conteúdo, testar os controles com mouse e teclado e revisar legibilidade, contraste e layout em telas menores antes da apresentação.",
   },
   {
     tool: "GitHub",
     ai: "Registro das versões e alterações do código.",
-    human: "[Indicar as decisões de revisão e aprovação do grupo.]",
+    human:
+      "Examinar as alterações no pull request, conferir o build e registrar qual versão do site foi aprovada para a entrega.",
   },
   {
     tool: "Vercel",
-    ai: "Hospedagem planejada para a entrega.",
-    human: "[Inserir URL e confirmar o acesso público após o deploy.]",
+    ai: "Hospedagem e distribuição do microsite.",
+    human:
+      "Após publicar, abrir a URL em computador e celular, testar a rota de créditos e confirmar que a versão mais recente está acessível ao público.",
   },
 ];

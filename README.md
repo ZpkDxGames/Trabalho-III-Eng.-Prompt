@@ -67,7 +67,7 @@ O site apresenta as referências completas e distingue a revisão atual do proto
 
 ## Transparência
 
-ChatGPT — GPT-5.6 Sol apoiou análise, síntese e especificação; Deep Research apoiou o levantamento técnico; ChatGPT Work foi usado para implementar o microsite. A seção “Como este trabalho foi preparado” reserva campos para o grupo registrar as decisões e revisões humanas efetivamente realizadas, sem inventá-las. GitHub registra versões; Vercel é o destino de hospedagem planejado.
+ChatGPT — GPT-6 Astra Max apoiou análise, síntese e especificação; Deep Research apoiou o levantamento técnico; ChatGPT Work foi usado para implementar o microsite. A seção “Como este trabalho foi preparado” apresenta critérios genéricos para o grupo conferir e adaptar; eles não afirmam que uma revisão humana já ocorreu. GitHub registra versões; Vercel é o destino de hospedagem do projeto.
 
 ## Integrantes
 
